@@ -1,0 +1,25 @@
+# IDEA 本地配置文件
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# 压缩包与临时工具文件夹
+*.zip
+附件4：视频转码工具/
+
+# Java 后端编译产物
+**/target/
+**/*.class
+**/*.jar
+**/*.war
+
+# Vue 前端依赖与打包产物
+**/node_modules/
+**/dist/
+
+# 日志与系统临时文件
+*.log
+logs/
+.DS_Store
+Thumbs.db
