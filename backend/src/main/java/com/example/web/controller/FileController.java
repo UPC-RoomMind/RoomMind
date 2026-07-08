@@ -22,10 +22,10 @@ import java.util.Date;
 @RequestMapping("/File")
 public class FileController {
 
-    @Value("${app.upload.path:./uploads}")
+    @Value("${app.upload.path}")
     private String uploadPath;
 
-    @Value("${app.upload.url-prefix:http://localhost:7245}")
+    @Value("${app.upload.url-prefix}")
     private String uploadUrlPrefix;
 
     /**

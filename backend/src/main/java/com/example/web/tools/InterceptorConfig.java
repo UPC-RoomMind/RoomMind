@@ -38,13 +38,15 @@ public class InterceptorConfig implements WebMvcConfigurer {
     /**
      * 资源的配置处理
      */
+    @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        //获取项目运行的绝对路径
+        // 原有配置：映射 static 目录
         String filePath = System.getProperty("user.dir");
-        //定义一个存放图片的文件目录
-        String localtion="file:"+filePath+"\\src\\main\\resources\\static\\";
-        // 只要是/images/** 开头的请求网址  都会去上面的localtion中寻找资讯
-        registry.addResourceHandler("/**").
-                addResourceLocations(localtion);
+        String localtion = "file:" + filePath + "/src/main/resources/static/";
+        registry.addResourceHandler("/**").addResourceLocations(localtion);
+        
+        // ✅ 新增：映射上传目录（支持开发和生产环境）
+        String uploadPath = System.getProperty("app.upload.path", "./uploads");
+        registry.addResourceHandler("/**").addResourceLocations("file:" + uploadPath + "/");
     }
 }
