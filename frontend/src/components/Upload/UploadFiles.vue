@@ -4,7 +4,7 @@
             :on-remove="handleRemove" :file-list="fileList" :limit="limit" :multiple="true">
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">请上传资源文件<span
-                    style="padding-left:10px;color:rgb(237, 95, 24)">最大可上传大小不超过1GB:</span>
+                    style="padding-left:10px;color:rgb(237, 95, 24)">最大可上传大小不超过50MB:</span>
             </div>
         </el-upload>
     </div>

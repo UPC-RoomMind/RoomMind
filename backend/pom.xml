@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>web</artifactId>
+    <artifactId>RoomMind</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>web</name>
-    <description>web</description>
+    <name>RoomMind</name>
+    <description>RoomMind - 自习室预约系统</description>
     <url/>
     <licenses>
         <license/>

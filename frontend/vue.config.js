@@ -17,6 +17,7 @@ module.exports = {
   //配置开发服务器
   devServer: {
     client: {
+      port: 5173,
       // 取消编译错误 全屏覆盖
       overlay: false,
     },

@@ -1,31 +1,27 @@
-# RoomAppoint v2.0 进阶扩展方案 - 可视化大屏
-
+﻿# RoomMind v2.0 进阶扩展方案 - 可视化大�?
 ---
 
-## 一、功能概述
-
-提供数据可视化大屏，展示自习室运营数据和用户学习数据，支持实时监控和趋势分析。
-
+## 一、功能概�?
+提供数据可视化大屏，展示自习室运营数据和用户学习数据，支持实时监控和趋势分析�?
 ### 1.1 大屏模块
 
-| 模块 | 说明 | 优先级 |
+| 模块 | 说明 | 优先�?|
 | :--- | :--- | :--- |
-| **实时数据** | 当前在线人数、使用座位数、实时趋势 | P0 |
+| **实时数据** | 当前在线人数、使用座位数、实时趋�?| P0 |
 | **学习统计** | 今日学习时长、平均专注度、学习排行榜 | P0 |
-| **热门科目** | 各学科学习热度排行 | P1 |
+| **热门科目** | 各学科学习热度排�?| P1 |
 | **用户画像** | 用户分布、活跃度分析 | P1 |
-| **设备状态** | 硬件设备在线状态、门禁统计 | P2 |
+| **设备状�?* | 硬件设备在线状态、门禁统�?| P2 |
 | **AI洞察** | AI生成的学习分析和建议 | P1 |
 
 ---
 
-## 二、前端页面设计
-
+## 二、前端页面设�?
 ```vue
 <template>
   <div class="dashboard-container">
     <div class="dashboard-header">
-      <h1>RoomAppoint 智能学习数据中心</h1>
+      <h1>RoomMind 智能学习数据中心</h1>
       <span class="update-time">数据更新: {{ updateTime }}</span>
     </div>
     
@@ -40,11 +36,11 @@
       </div>
       <div class="stat-card warning">
         <span class="card-value">{{ avgFocusRate }}%</span>
-        <span class="card-title">平均专注度</span>
+        <span class="card-title">平均专注�?/span>
       </div>
       <div class="stat-card danger">
         <span class="card-value">{{ seatUsageRate }}%</span>
-        <span class="card-title">座位使用率</span>
+        <span class="card-title">座位使用�?/span>
       </div>
     </div>
     
@@ -58,7 +54,7 @@
         <div ref="subjectChart" class="chart"></div>
       </div>
       <div class="chart-panel">
-        <h3>学习排行榜</h3>
+        <h3>学习排行�?/h3>
         <div class="ranking-list">
           <div v-for="(user, index) in ranking" :key="user.Id" class="ranking-item">
             <span class="rank">{{ index + 1 }}</span>
@@ -118,11 +114,13 @@ export default {
 | :--- | :--- | :--- |
 | `/Dashboard/GetRealTimeData` | POST | 获取实时数据 |
 | `/Dashboard/GetStudyStats` | POST | 获取学习统计 |
-| `/Dashboard/GetRanking` | POST | 获取排行榜 |
+| `/Dashboard/GetRanking` | POST | 获取排行�?|
 | `/Dashboard/GetAIInsights` | POST | 获取AI洞察 |
 
 ---
 
 **文档版本**：v2.0  
-**适用项目**：RoomAppoint 自习室预约系统  
-**最后更新**：2026年7月
+**适用项目**：RoomMind 自习室预约系�? 
+**最后更�?*�?026�?�
+
+
