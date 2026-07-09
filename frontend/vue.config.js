@@ -16,10 +16,21 @@ module.exports = {
   },
   //配置开发服务器
   devServer: {
-  port: 8081,  // ✅ port 移到外面
+  port: 5173,
   client: {
-    // ❌ 删除 port: 5173
-    overlay: false,  // 取消编译错误全屏覆盖
+    overlay: false,
+  },
+  proxy: {
+    '/api': {
+      target: 'http://localhost:8080',
+      changeOrigin: true,
+      pathRewrite: { '^/api': '' },
+    },
+    '/test-api': {
+      target: 'http://localhost:8080',
+      changeOrigin: true,
+      pathRewrite: { '^/test-api': '' },
+    },
   },
 },
   css: {

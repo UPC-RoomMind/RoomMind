@@ -23,3 +23,7 @@
 logs/
 .DS_Store
 Thumbs.db
+
+# 上传文件目录 - 不提交到仓库
+uploads/
+uploads-dev/

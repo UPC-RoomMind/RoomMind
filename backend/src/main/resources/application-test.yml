@@ -5,20 +5,22 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://mysql-prod:3306/prod_roommind?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    # 容器网桥互通，使用容器名mysql-dev，不再使用公网IP
+    url: jdbc:mysql://mysql-dev:3306/dev_roommind?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: root
-    password: Smallv@zhuangbi6.
+    password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   servlet:
     multipart:
-      max-request-size: 50MB
-      max-file-size: 50MB
+      max-request-size: 100MB
+      max-file-size: 100MB
 
   jackson:
     property-naming-strategy: UPPER_CAMEL_CASE
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: Asia/Shanghai
+
   mail:
     host: smtp.163.com
     port: 465
@@ -32,14 +34,15 @@ spring:
           auth: true
           ssl:
             enable: true
-        debug: false
+        debug: true
 
   rabbitmq:
-    host: rabbitmq-prod
+    # 容器内网名称，替换公网IP
+    host: rabbitmq-dev
     port: 5672
-    username: prod_Smallv
-    password: Smallv@zhuangbi6.
-    virtual-host: prod_room
+    username: dev_admin
+    password: 123456
+    virtual-host: dev_vhost
     connection-timeout: 5000ms
     requested-heartbeat: 30
     publisher-confirm-type: correlated
@@ -56,9 +59,10 @@ spring:
           initial-interval: 1000ms
 
   redis:
-    host: redis-prod
+    # 新增Redis完整配置，匹配redis-dev容器
+    host: redis-dev
     port: 6379
-    password: Redis@Prod999
+    password: 123456
     timeout: 5000ms
 
 mybatis-plus:
@@ -68,16 +72,16 @@ mybatis-plus:
     db-config:
       table-prefix:
   configuration:
-    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: false
 
 logging:
   level:
-    com.baomidou.mybatisplus: INFO
-    org.mybatis: INFO
+    com.baomidou.mybatisplus: DEBUG
+    org.mybatis: DEBUG
 
 app:
   upload:
     path: /roommind/upload
     url-prefix: https://smallv.fun
-    access-path: /uploads
+    access-path: /test-uploads

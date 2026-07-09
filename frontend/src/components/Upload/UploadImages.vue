@@ -220,7 +220,7 @@ export default {
     // ==================== Data ====================
     data() {
         return {
-            uploadUrl: process.env.VUE_APP_BASE_API + "/File/BatchUpload",
+            uploadUrl: '/api/File/BatchUpload',
             uploadHeaders: {},
             uploadFileList: [],
             fileList: [],

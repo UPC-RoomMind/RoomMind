@@ -5,9 +5,9 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/RoomAppoint?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://47.94.202.210:3306/dev_roommind?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: root
-    password: msy19881191818@
+    password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   servlet:
@@ -34,6 +34,35 @@ spring:
             enable: true
         debug: true
 
+  # rabbitmq 缩进在 spring 里面
+  rabbitmq:
+    # 连接配置
+    host: 47.94.202.210
+    port: 5672
+    username: dev_admin
+    password: 123456
+    virtual-host: dev_vhost
+
+    # 连接池配置
+    connection-timeout: 5000ms
+    requested-heartbeat: 30
+
+    # 生产者确认
+    publisher-confirm-type: correlated
+    publisher-returns: true
+
+    # 消费者配置
+    listener:
+      simple:
+        concurrency: 5
+        max-concurrency: 10
+        prefetch: 1
+        acknowledge-mode: manual  # 手动确认
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 1000ms
+
 mybatis-plus:
   mapper-locations: mapper/*.xml
   type-aliases-package: com.example.web.entity
@@ -51,33 +80,6 @@ logging:
 
 app:
   upload:
-    path: ./uploads
+    path: ./uploads-dev
     url-prefix: http://localhost:8080
-
-rabbitmq:
-  # 连接配置
-  host: localhost
-  port: 5672
-  username: admin          # 刚才创建的用户
-  password: admin
-  virtual-host: roomappoint # 刚才创建的虚拟主机
-
-  # 连接池配置
-  connection-timeout: 5000ms
-  requested-heartbeat: 30
-
-  # 生产者确认
-  publisher-confirm-type: correlated
-  publisher-returns: true
-
-  # 消费者配置
-  listener:
-    simple:
-      concurrency: 5
-      max-concurrency: 10
-      prefetch: 1
-      acknowledge-mode: manual  # 手动确认
-      retry:
-        enabled: true
-        max-attempts: 3
-        initial-interval: 1000ms
+    access-path: /uploads
