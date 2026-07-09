@@ -144,21 +144,43 @@ export default {
     methods: {
         //订单确认
         async ToOrder() {
-            this.$refs.editModalForm.validate(async (valid) => {
-                if (valid) {
-                    let { Success } = await this.$Post("/AppointRecord/ToOrder", this.formData);
-                    if (Success) {
-                        //跳转到下一个页面
-                        this.$router.push({
-                            path: "/Front/AppointRecordList"
-                        })
-                    }
-                } else {
+        // ✅ 1. 如果正在提交，直接返回（防重复点击）
+        if (this.isSubmitting) {
+            this.$message.warning('正在提交中，请勿重复点击');
+            return;
+        }
 
-                    return false;
+        // ✅ 2. 表单验证
+        this.$refs.editModalForm.validate(async (valid) => {
+            if (!valid) {
+                return false;
+            }
+
+            // ✅ 3. 设置提交状态为 true（按钮变灰，禁止再次点击）
+            this.isSubmitting = true;
+
+            try {
+                // ✅ 4. 发送请求
+                let { Success, Msg } = await this.$Post("/AppointRecord/ToOrder", this.formData);
+                
+                if (Success) {
+                    this.$message.success('预约已提交，正在处理中...');
+                    // 跳转到预约列表
+                    this.$router.push({
+                        path: "/Front/AppointRecordList"
+                    });
+                } else {
+                    this.$message.error(Msg || '预约提交失败，请重试');
+                    // ✅ 失败时立即解除锁定，允许用户重试
+                    this.isSubmitting = false;
                 }
-            });
-        },
+            } catch (error) {
+                this.$message.error('网络异常，请稍后重试');
+                // ✅ 异常时解除锁定
+                this.isSubmitting = false;
+            }
+        });
+    },
         //返回上一个页面
         goBack() {
             this.$router.go(-1)

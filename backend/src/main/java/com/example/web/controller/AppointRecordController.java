@@ -5,6 +5,7 @@ import com.example.web.dto.*;
 import com.example.web.dto.query.*;
 import com.example.web.entity.*;
 import com.example.web.mapper.*;
+import com.example.web.rabbitqueue.RabbitMQConfig;
 import com.example.web.service.*;
 import com.example.web.tools.dto.*;
 import com.example.web.tools.exception.CustomException;
@@ -16,6 +17,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,6 +42,9 @@ public class AppointRecordController {
     @Autowired()
     private AppointRecordMapper _AppointRecordMapper;
 
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
     /**
      * 预约记录分页查询
      */
@@ -95,8 +100,32 @@ public class AppointRecordController {
      * 选座确认
      */
     @RequestMapping(value = "/ToOrder", method = RequestMethod.POST)
-    public AppointRecordDto ToOrder(@RequestBody AppointRecordDto input) {
-        return _AppointRecordService.ToOrder(input);
+    public Map<String, Object> ToOrder(@RequestBody AppointRecordDto input) {
+        Map<String, Object> result = new HashMap<>();
+
+        try {
+            // 1. 生成唯一订单号（用于追踪）
+            String orderId = UUID.randomUUID().toString().replace("-", "");
+            AppointOrderMessageDto message = new AppointOrderMessageDto(orderId, input);
+
+            // 3. 发送到 RabbitMQ
+            rabbitTemplate.convertAndSend(
+                    RabbitMQConfig.EXCHANGE_NAME,
+                    RabbitMQConfig.ROUTING_KEY,
+                    message  // ✅ 发送包装类，原 DTO 不变
+            );
+
+            // 3. 立即返回"已受理"，不阻塞等待
+            result.put("Success", true);
+            result.put("OrderId", orderId);
+            result.put("Msg", "预约已提交，正在处理中...");
+
+        } catch (Exception e) {
+            result.put("Success", false);
+            result.put("Msg", "预约提交失败: " + e.getMessage());
+        }
+
+        return result;
     }
 
     /**

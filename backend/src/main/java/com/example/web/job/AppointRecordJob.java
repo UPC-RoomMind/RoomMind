@@ -17,7 +17,6 @@ public class AppointRecordJob {
     @Scheduled(cron = "*/10 * * * * ?")
     private void AutoCompletedAppoint() {
         long nowDateTime = System.currentTimeMillis();
-        System.out.println("固定定时任务执行:--->" + nowDateTime + "，任务名称:每隔10s检测座位预约是否结束");
         _AppointRecordService.AutoCompletedAppoint();
     }
     /**
@@ -26,7 +25,6 @@ public class AppointRecordJob {
     @Scheduled(cron = "*/10 * * * * ?")
     private void AutoOverdueTimes() {
         long nowDateTime = System.currentTimeMillis();
-        System.out.println("固定定时任务执行:--->" + nowDateTime + "，任务名称:每隔10s检测自动逾期");
         _AppointRecordService.AutoOverdueTimes();
     }
 

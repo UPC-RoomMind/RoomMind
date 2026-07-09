@@ -28,8 +28,7 @@ import java.util.List;
  * 预约记录类
  */
 @Data
-public class AppointRecordDto extends BaseDto {
-
+public class AppointRecordDto extends BaseDto  {
 
     /**
      * 自习室

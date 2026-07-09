@@ -16,12 +16,12 @@ module.exports = {
   },
   //配置开发服务器
   devServer: {
-    client: {
-      port: 5173,
-      // 取消编译错误 全屏覆盖
-      overlay: false,
-    },
+  port: 8081,  // ✅ port 移到外面
+  client: {
+    // ❌ 删除 port: 5173
+    overlay: false,  // 取消编译错误全屏覆盖
   },
+},
   css: {
     loaderOptions: {
       sass: {
