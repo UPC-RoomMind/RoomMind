@@ -1,7 +1,7 @@
 const { defineConfig } = require("@vue/cli-service");
 const webpack = require("webpack"); //导入 webpack 模块
 
-module.exports = {
+module.exports = defineConfig({
   transpileDependencies: true,
   lintOnSave: false,
   publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
@@ -16,23 +16,23 @@ module.exports = {
   },
   //配置开发服务器
   devServer: {
-  port: 5173,
-  client: {
-    overlay: false,
-  },
-  proxy: {
-    '/api': {
-      target: 'http://localhost:8080',
-      changeOrigin: true,
-      pathRewrite: { '^/api': '' },
+    port: 8081,
+    client: {
+      overlay: false, // 取消编译错误全屏覆盖
     },
-    '/test-api': {
-      target: 'http://localhost:8080',
-      changeOrigin: true,
-      pathRewrite: { '^/test-api': '' },
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        pathRewrite: { '^/api': '' },
+      },
+      '/test-api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        pathRewrite: { '^/test-api': '' },
+      },
     },
   },
-},
   css: {
     loaderOptions: {
       sass: {
@@ -40,4 +40,4 @@ module.exports = {
       },
     },
   },
-};
+});
