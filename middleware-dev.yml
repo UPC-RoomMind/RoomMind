@@ -1,0 +1,77 @@
+version: "3.8"
+networks:
+  dev_net:
+    driver: bridge
+
+volumes:
+  mysql_dev_data:
+  redis_dev_data:
+  rabbitmq_dev_data:
+  mysql_dev_conf:
+
+services:
+  mysql-dev:
+    image: mysql:8.0
+    container_name: mysql-dev
+    # 放开端口，外部电脑可连接
+    ports:
+      - "3306:3306"
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: dev_roommind
+    volumes:
+      - mysql_dev_data:/var/lib/mysql
+      - mysql_dev_conf:/etc/mysql/conf.d
+    networks:
+      - dev_net
+    restart: always
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '0.6'
+          memory: 400m
+
+  redis-dev:
+    image: redis:7-alpine
+    container_name: redis-dev
+    ports:
+      - "6379:6379"
+    environment:
+      TZ: Asia/Shanghai
+    command: redis-server --requirepass 123456 --appendonly yes
+    volumes:
+      - redis_dev_data:/data
+    networks:
+      - dev_net
+    restart: always
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 180m
+
+  rabbitmq-dev:
+    image: rabbitmq:3-management
+    container_name: rabbitmq-dev
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      TZ: Asia/Shanghai
+      RABBITMQ_DEFAULT_USER: dev_admin
+      RABBITMQ_DEFAULT_PASS: 123456
+      RABBITMQ_DEFAULT_VHOST: dev_vhost
+    volumes:
+      - rabbitmq_dev_data:/var/lib/rabbitmq
+    networks:
+      - dev_net
+    restart: always
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '0.3'
+          memory: 220m

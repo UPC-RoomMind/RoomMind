@@ -1,0 +1,74 @@
+version: "3.8"
+# 生产专用网络 prod_net，和开发dev_net对应
+networks:
+  prod_net:
+    driver: bridge
+
+volumes:
+  mysql_prod_data:
+  redis_prod_data:
+  rabbitmq_prod_data:
+  mysql_conf:
+
+services:
+  mysql-prod:
+    image: mysql:8.0
+    container_name: mysql-prod
+    ports:
+      - "127.0.0.1:3316:3306"
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: Smallv@zhuangbi6.
+      MYSQL_DATABASE: prod_roommind
+    volumes:
+      - mysql_prod_data:/var/lib/mysql
+      - mysql_conf:/etc/mysql/conf.d
+    networks:
+      - prod_net
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: "0.6"
+          memory: 450m
+
+  redis-prod:
+    image: redis:7-alpine
+    container_name: redis-prod
+    ports:
+      - "127.0.0.1:6389:6379"
+    environment:
+      TZ: Asia/Shanghai
+    command: redis-server --requirepass Redis@Prod999 --appendonly yes
+    volumes:
+      - redis_prod_data:/data
+    networks:
+      - prod_net
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: 200m
+
+  rabbitmq-prod:
+    image: rabbitmq:3-management
+    container_name: rabbitmq-prod
+    ports:
+      - "127.0.0.1:5682:5672"
+      - "127.0.0.1:15682:15672"
+    environment:
+      TZ: Asia/Shanghai
+      RABBITMQ_DEFAULT_USER: prod_Smallv
+      RABBITMQ_DEFAULT_PASS: Smallv@zhuangbi6.
+      RABBITMQ_DEFAULT_VHOST: prod_room
+    volumes:
+      - rabbitmq_prod_data:/var/lib/rabbitmq
+    networks:
+      - prod_net
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: "0.3"
+          memory: 250m

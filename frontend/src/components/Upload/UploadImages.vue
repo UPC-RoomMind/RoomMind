@@ -220,7 +220,7 @@ export default {
     // ==================== Data ====================
     data() {
         return {
-            uploadUrl: process.env.VUE_APP_BASE_API + "/File/BatchUpload",
+            uploadUrl: '/api/File/BatchUpload',
             uploadHeaders: {},
             uploadFileList: [],
             fileList: [],
@@ -568,14 +568,6 @@ export default {
                 console.error('裁剪失败:', error);
                 this.$message.error('裁剪失败，请重试');
             }
-        },
-
-        /**
-         * 更新 v-model 值
-         */
-        updateValue() {
-            const urls = this.fileList.map(item => item.url);
-            this.$emit('input', urls.join(','));
         },
 
         /**
