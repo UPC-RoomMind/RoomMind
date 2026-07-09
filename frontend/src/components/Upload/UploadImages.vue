@@ -571,14 +571,6 @@ export default {
         },
 
         /**
-         * 更新 v-model 值
-         */
-        updateValue() {
-            const urls = this.fileList.map(item => item.url);
-            this.$emit('input', urls.join(','));
-        },
-
-        /**
          * 获取文件列表（供父组件调用）
          */
         getFileList() {
