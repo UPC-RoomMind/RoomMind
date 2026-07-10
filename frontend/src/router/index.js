@@ -88,6 +88,14 @@ export const frontRouters = [
                     isAdmin: false,
                 },
                 component: () => import("@/views/Front/PasswordEdit")
+            },
+            {
+                path: "/Front/AiAssistant",
+                meta: {
+                    title: "AI智能助手",
+                    isAdmin: false,
+                },
+                component: () => import("@/views/Front/AiAssistant")
             }
 
 
@@ -203,6 +211,14 @@ export const adminRouters = [{
                 isAdmin: true,
             },
             component: () => import("@/views/Admin/GetAppointRoomRealTimeData")
+        },
+        {
+            path: "/Admin/AiAssistant",
+            meta: {
+                title: "AI智能助手",
+                isAdmin: true,
+            },
+            component: () => import("@/views/Front/AiAssistant")
         },
 
     ]
