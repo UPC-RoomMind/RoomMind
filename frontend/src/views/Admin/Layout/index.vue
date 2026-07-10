@@ -83,6 +83,11 @@
                             <i class="el-icon-medal"></i>
                             <span>积分管理</span>
                         </el-menu-item>
+
+                        <el-menu-item index="/Admin/AiAssistant">
+                            <i class="el-icon-cpu"></i>
+                            <span>AI助手</span>
+                        </el-menu-item>
                     </el-menu>
                 </el-aside>
 
