@@ -16,7 +16,7 @@ module.exports = defineConfig({
   },
   //配置开发服务器
   devServer: {
-    port: 8081,
+    port: 5173,
     client: {
       overlay: false, // 取消编译错误全屏覆盖
     },
