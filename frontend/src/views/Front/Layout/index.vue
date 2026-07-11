@@ -33,11 +33,6 @@
                                 <span>我的积分</span>
                             </el-menu-item>
 
-                            <el-menu-item index="/Front/AiAssistant" @click="ToPath('/Front/AiAssistant')">
-                                <i class="el-icon-cpu"></i>
-                                <span>AI助手</span>
-                            </el-menu-item>
-
                             <!-- User Menu or Login/Register -->
                             <el-submenu v-if="Token" index="user" class="user-submenu">
                                 <template slot="title">
@@ -105,6 +100,9 @@
                 </div>
             </el-footer>
         </el-container>
+
+        <!-- AI 智能助手悬浮弹窗 -->
+        <AiChatWidget />
     </div>
 </template>
 
@@ -112,8 +110,12 @@
 import * as echarts from "echarts";
 import store from '@/store'
 import { mapGetters } from 'vuex'
+import AiChatWidget from '@/components/AiChatWidget.vue'
 
 export default {
+    components: {
+        AiChatWidget
+    },
     data() {
         return {
             active: 'home',
