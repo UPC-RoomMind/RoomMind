@@ -18,4 +18,7 @@ public class ChatInput {
 
     @JsonProperty("Temperature")
     private Double Temperature;
+
+    @JsonProperty("UserId")
+    private Integer UserId;
 }

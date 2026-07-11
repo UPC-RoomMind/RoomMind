@@ -2,12 +2,14 @@ package com.example.web.service.impl;
 
 import com.example.web.dto.ChatInput;
 import com.example.web.dto.ChatMessageDto;
+import com.example.web.service.AiContextService;
 import com.example.web.service.DeepSeekService;
 import com.example.web.tools.Extension;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,9 @@ import java.nio.charset.StandardCharsets;
 
 @Service
 public class DeepSeekServiceImpl implements DeepSeekService {
+
+    @Autowired
+    private AiContextService aiContextService;
 
     @Value("${app.deepseek.api-key}")
     private String apiKey;
@@ -46,12 +51,38 @@ public class DeepSeekServiceImpl implements DeepSeekService {
         try {
             // 1. 检查 API key 是否配置
             if (apiKey == null || apiKey.trim().isEmpty() || apiKey.startsWith("your_")) {
-                return new ChatMessageDto("assistant", 
+                return new ChatMessageDto("assistant",
                     "⚠️ AI助手尚未配置。请联系管理员在 application-dev.yml 中设置有效的 DeepSeek API Key。\n\n" +
                     "配置路径：app.deepseek.api-key");
             }
 
-            // 2. 构建请求体（使用 Jackson，字段名小写以符合 DeepSeek API 规范）
+            String userMessage = input.getMessage() != null ? input.getMessage().trim() : "";
+
+            // ========== 2. RAG：基于用户问题从系统查询上下文数据 ==========
+            String contextData;
+            try {
+                contextData = aiContextService.buildContext(userMessage, input.getUserId());
+            } catch (Exception ctxEx) {
+                contextData = "【系统数据检索暂不可用】\n错误：" + ctxEx.getMessage() + "\n请基于常规系统规则回答。\n\n";
+            }
+
+            // 3. 构建动态 system prompt：固定角色 + 系统上下文数据
+            StringBuilder dynamicPrompt = new StringBuilder();
+            dynamicPrompt.append("你是一个【志高自习室预约系统】的智能助手，负责回答用户关于系统使用、预约规则、自习室介绍等问题。\n\n");
+            dynamicPrompt.append("【角色定位】\n");
+            dynamicPrompt.append("- 用简洁、清晰、友好的中文回答。\n");
+            dynamicPrompt.append("- 回答必须严格基于下方【系统数据】，不要编造不存在的自习室、座位、用户数据或规则。\n");
+            dynamicPrompt.append("- 如果系统数据中没有明确信息，可以基于系统规则给出建议，但要标注【这是建议，具体以系统实际数据为准】。\n\n");
+            dynamicPrompt.append(contextData);
+            dynamicPrompt.append("\n\n【用户身份】\n");
+            dynamicPrompt.append(input.getUserId() != null ? "已登录用户（UserId: " + input.getUserId() + "），可以查询其个人预约和积分数据。\n" : "未登录用户，无法查询个人预约记录和积分，需要时请提示登录。\n");
+            dynamicPrompt.append("\n【输出格式】\n");
+            dynamicPrompt.append("- 关键信息（如自习室名称、步骤）用**加粗**标记。\n");
+            dynamicPrompt.append("- 步骤型答案用 1. 2. 3. 列表。\n");
+            dynamicPrompt.append("- 数字类答案（如积分、数量）要明确给出数值。\n");
+            dynamicPrompt.append("- 禁止输出 markdown 代码块，直接用纯文本回答。\n");
+
+            // 4. 构建请求体（使用 Jackson，字段名小写以符合 DeepSeek API 规范）
             ObjectNode bodyNode = objectMapper.createObjectNode();
             bodyNode.put("model", model);
             bodyNode.put("stream", false);
@@ -63,10 +94,10 @@ public class DeepSeekServiceImpl implements DeepSeekService {
 
             ArrayNode messagesNode = bodyNode.putArray("messages");
 
-            // system message
+            // system message - 动态上下文
             ObjectNode systemMsg = messagesNode.addObject();
             systemMsg.put("role", "system");
-            systemMsg.put("content", systemPrompt);
+            systemMsg.put("content", dynamicPrompt.toString());
 
             // history messages
             if (input.getHistory() != null && !input.getHistory().isEmpty()) {
@@ -82,7 +113,7 @@ public class DeepSeekServiceImpl implements DeepSeekService {
             // user message
             ObjectNode userMsg = messagesNode.addObject();
             userMsg.put("role", "user");
-            userMsg.put("content", input.getMessage());
+            userMsg.put("content", userMessage);
 
             String body = objectMapper.writeValueAsString(bodyNode);
 
