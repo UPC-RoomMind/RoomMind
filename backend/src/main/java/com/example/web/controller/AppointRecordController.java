@@ -42,7 +42,6 @@ public class AppointRecordController {
     @Autowired()
     private AppointRecordMapper _AppointRecordMapper;
 
-
     @Autowired
     private RabbitTemplate rabbitTemplate;
     /**
